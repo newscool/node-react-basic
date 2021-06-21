@@ -21,6 +21,7 @@ export const join = async (req, res) => {
 
     return res.status(200).json({ success: "유저 생성 완료!" });
   } catch (error) {
+    console.log(error);
     return res.status(400).json({ errorMessage: error._message });
   }
 };
