@@ -41,7 +41,9 @@ export const login = async (req, res) => {
     return res.status(400).json({ loginSuccess: false, errorMessage: "비밀번호가 틀렸습니다." });
   }
 
-  // 토큰 생성
+  // 토큰 생성 & 저장
   const token = jwt.sign(user._id.toString(), SECRET);
+  user.token = token;
+  await user.save();
   return res.cookie("_auth", token).status(200).json({ loginSuccess: true, userId: user._id });
 };
