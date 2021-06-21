@@ -1,7 +1,17 @@
 import express from "express";
+import morgan from "morgan";
+import rootRouter from "./routers/rootRouter";
+import userRouter from "./routers/userRouter";
 
-const PORT = 5000;
 const app = express();
-const handleListen = () => console.log(`Server Listening on http://localhost:${PORT}`);
+const logger = morgan("dev");
 
-app.listen(PORT, handleListen);
+app.use(logger);
+
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
+app.use("/", rootRouter);
+app.use("/users", userRouter);
+
+export default app;
