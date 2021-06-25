@@ -45,5 +45,32 @@ export const login = async (req, res) => {
   const token = jwt.sign(user._id.toString(), SECRET);
   user.token = token;
   await user.save();
-  return res.cookie("_auth", token).status(200).json({ loginSuccess: true, userId: user._id });
+  return res.cookie("x_auth", token).status(200).json({ loginSuccess: true, userId: user._id });
+};
+
+export const authControl = (req, res) => {
+  return res.status(200).json({
+    _id: req.user._id,
+    isAdmin: req.user.role === 0 ? false : true,
+    isAuth: true,
+    email: req.user.email,
+    name: req.user.name,
+    role: req.user.role,
+    avatar: req.user.avatar,
+  });
+};
+
+export const logout = async (req, res) => {
+  const updatedUser = await User.findOneAndUpdate(
+    { _id: req.user._id },
+    {
+      token: "",
+    }
+  );
+  if (!updatedUser) {
+    return res.status(403).json({ success: false, errorMessage: "권한이 없습니다." });
+  }
+  return res.status(200).json({
+    success: true,
+  });
 };
